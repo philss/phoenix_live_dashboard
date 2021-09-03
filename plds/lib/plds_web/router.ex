@@ -10,7 +10,6 @@ defmodule PLDSWeb.Router do
     pipe_through :api
   end
 
-
   scope "/" do
     pipe_through [:fetch_session, :protect_from_forgery]
     live_dashboard "/", metrics: PLDSWeb.Telemetry

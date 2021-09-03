@@ -42,7 +42,7 @@ defmodule PLDSCli do
 
   defp call(_args), do: IO.write(usage())
 
-  defp find_task("server"), do: PLDS.Server
+  defp find_task("server"), do: PLDSCli.Server
   defp find_task(_), do: nil
 
   defp call_task(task, [arg]) when arg in ["--help", "-h"] do
