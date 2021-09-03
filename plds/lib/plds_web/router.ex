@@ -12,6 +12,9 @@ defmodule PLDSWeb.Router do
 
   scope "/" do
     pipe_through [:fetch_session, :protect_from_forgery]
-    live_dashboard "/", metrics: PLDSWeb.Telemetry
+
+    live_dashboard "/",
+      metrics: PLDSWeb.Telemetry,
+      additional_pages: [broadway: BroadwayDashboard]
   end
 end

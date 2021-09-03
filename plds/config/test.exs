@@ -6,5 +6,7 @@ config :plds, PLDSWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   server: false
 
+config :plds, :cookie, :"my-plds-test-cookie"
+
 # Print only warnings and errors during test
 config :logger, level: :warn

@@ -37,6 +37,8 @@ defmodule PLDS.MixProject do
       {:phoenix, "~> 1.5.10"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:telemetry_metrics, "~> 0.4"},
+      {:ecto_psql_extras, "~> 0.6.5"},
+      {:broadway_dashboard, "~> 0.1"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"}
     ]

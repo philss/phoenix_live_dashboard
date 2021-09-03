@@ -1,6 +1,10 @@
 defmodule PLDSCli.Server do
   @moduledoc false
 
+  # Starts the PLDS server.
+  # Most of the code here was copied from Livebook code.
+  # Ref: https://github.com/livebook-dev/livebook/blob/2a338b6b83671a54c4d3fce5e58b3ccba0666c37/lib/livebook_cli/server.ex
+
   def usage do
     """
     Usage: plds server [options]
@@ -20,7 +24,6 @@ defmodule PLDSCli.Server do
     """
   end
 
-  @impl true
   def call(args) do
     opts = args_to_options(args)
     config_entries = opts_to_config(opts, [])
