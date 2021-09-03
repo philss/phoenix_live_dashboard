@@ -8,7 +8,13 @@ defmodule PLDS.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: PLDS.Worker.start_link(arg)
+      # Start the Telemetry supervisor
+      PLDSWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: PLDS.PubSub},
+      # Start the Endpoint (http/https)
+      PLDSWeb.Endpoint
+      # Start a worker by calling: PLDS.Worker.start_link(arg)
       # {PLDS.Worker, arg}
     ]
 
@@ -16,5 +22,13 @@ defmodule PLDS.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: PLDS.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  @impl true
+  def config_change(changed, _new, removed) do
+    PLDSWeb.Endpoint.config_change(changed, removed)
+    :ok
   end
 end
