@@ -1,4 +1,4 @@
-defmodule PLDS do
+defmodule PLDSCli do
   @moduledoc false
 
   def usage do

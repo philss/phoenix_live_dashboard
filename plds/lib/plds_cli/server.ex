@@ -1,4 +1,4 @@
-defmodule PLDS.Server do
+defmodule PLDSCli.Server do
   def usage do
     """
     Usage: plds server [options]
