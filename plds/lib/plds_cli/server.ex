@@ -11,6 +11,9 @@ defmodule PLDSCli.Server do
 
     Available options:
 
+      --connect            One or more node names to connect.
+                           It accepts a list of nodes separated by comma. Ex: "foo, bar".
+                           If you are using full names, then it will try to connect with the host.
       --cookie             Sets a cookie for the app distributed node
       --ip                 The ip address to start the web application on, defaults to 127.0.0.1
                            Must be a valid IPv4 or IPv6 address
@@ -109,11 +112,13 @@ defmodule PLDSCli.Server do
     name: :string,
     open: :boolean,
     port: :integer,
+    connect: :string,
     sname: :string
   ]
 
   @aliases [
-    p: :port
+    p: :port,
+    c: :connect
   ]
 
   defp args_to_options(args) do
@@ -152,6 +157,12 @@ defmodule PLDSCli.Server do
   defp opts_to_config([{:cookie, cookie} | opts], config) do
     cookie = String.to_atom(cookie)
     opts_to_config(opts, [{:plds, :cookie, cookie} | config])
+  end
+
+  defp opts_to_config([{:connect, names_to_connect} | opts], config) do
+    names = for name <- String.split(names_to_connect, ~r/,\s?/), do: String.to_atom(name)
+
+    opts_to_config(opts, [{:plds, :nodes_to_connect, names} | config])
   end
 
   defp opts_to_config([_opt | opts], config), do: opts_to_config(opts, config)
