@@ -160,7 +160,10 @@ defmodule PLDSCli.Server do
   end
 
   defp opts_to_config([{:connect, names_to_connect} | opts], config) do
-    names = for name <- String.split(names_to_connect, ~r/,\s?/), do: String.to_atom(name)
+    names =
+      names_to_connect
+      |> String.split(~r/,\s?/)
+      |> Enum.map(fn name -> String.to_atom(name) end)
 
     opts_to_config(opts, [{:plds, :nodes_to_connect, names} | config])
   end

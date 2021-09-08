@@ -15,6 +15,8 @@ config :plds, PLDSWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :plds, :cookie, :my_cookie
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

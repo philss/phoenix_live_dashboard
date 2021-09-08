@@ -74,13 +74,19 @@ defmodule PLDS.Application do
   defp connect_to_nodes! do
     nodes = Application.get_env(:plds, :nodes_to_connect, [])
     node_name = Atom.to_string(node())
+    [_, host] = String.split(node_name, "@")
 
-    case String.split(node_name, "@") do
-      [_, host] ->
-        for name <- nodes, do: connect_to(String.to_atom("#{name}@#{host}"))
+    # We get the current node host as host for when connect
+    # only have shortnames
+    for name <- nodes do
+      name =
+        if String.contains?(Atom.to_string(name), "@") do
+          name
+        else
+          String.to_atom("#{name}@#{host}")
+        end
 
-      [_name] ->
-        for name <- nodes, do: connect_to(name)
+      connect_to(name)
     end
   end
 
