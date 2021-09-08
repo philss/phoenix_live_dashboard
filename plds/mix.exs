@@ -35,7 +35,7 @@ defmodule PLDS.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.5.12"},
-      {:phoenix_live_dashboard, "~> 0.5"},
+      {:phoenix_live_dashboard, path: "../", override: true},
       {:telemetry_metrics, "~> 0.4"},
       {:ecto_psql_extras, "~> 0.6.5"},
       {:broadway_dashboard, "~> 0.2.1"},
