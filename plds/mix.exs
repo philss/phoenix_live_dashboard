@@ -21,7 +21,7 @@ defmodule PLDS.MixProject do
   def application do
     [
       mod: {PLDS.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
 
@@ -34,11 +34,11 @@ defmodule PLDS.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.10"},
+      {:phoenix, "~> 1.5.12"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:telemetry_metrics, "~> 0.4"},
       {:ecto_psql_extras, "~> 0.6.5"},
-      {:broadway_dashboard, "~> 0.1"},
+      {:broadway_dashboard, "~> 0.2.1"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"}
     ]
