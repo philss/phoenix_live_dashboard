@@ -14,13 +14,13 @@ defmodule PLDSCli.Server do
       --connect            One or more node names to connect.
                            It accepts a list of nodes separated by comma. Ex: "foo, bar".
                            If you are using full names, then it will try to connect with the host.
-      --cookie             Sets a cookie for the app distributed node
+      --cookie             Sets a cookie for the app distributed node.
       --ip                 The ip address to start the web application on, defaults to 127.0.0.1
-                           Must be a valid IPv4 or IPv6 address
-      --name               Set a name for the app distributed node
-      --open               Open browser window pointing to the application
-      -p, --port           The port to start the web application on, defaults to 8080
-      --sname              Set a short name for the app distributed node
+                           Must be a valid IPv4 or IPv6 address.
+      --name               Set a name for the app distributed node.
+      --open               Open browser window pointing to the application.
+      -p, --port           The port to start the web application on. Defaults to 8080.
+      --sname              Set a short name for the app distributed node. Defaults to "plds".
 
     The --help option can be given to print this notice.
 
@@ -32,11 +32,13 @@ defmodule PLDSCli.Server do
     config_entries = opts_to_config(opts, [])
     put_config_entries(config_entries)
 
-    port = Application.get_env(:plds, PLDSWeb.Endpoint)[:http][:port]
+    endpoint_config = Application.fetch_env!(:plds, PLDSWeb.Endpoint)
+
+    port = endpoint_config[:http][:port]
     base_url = "http://localhost:#{port}"
 
     case check_endpoint_availability(base_url) do
-      :livebook_running ->
+      :plds_running ->
         IO.puts("PLDS already running on #{base_url}")
         open_from_options(base_url, opts)
 
@@ -70,26 +72,24 @@ defmodule PLDSCli.Server do
     |> Application.put_all_env(persistent: true)
   end
 
-  defp check_endpoint_availability(_base_url), do: :available
-  # defp check_endpoint_availability(base_url) do
-  #   Application.ensure_all_started(:inets)
+  defp check_endpoint_availability(base_url) do
+    url = base_url <> "/health"
+    {:ok, _} = Application.ensure_all_started(:inets)
 
-  #   health_url = append_path(base_url, "health")
+    case :httpc.request(:get, {url, []}, [timeout: 4_000], body_format: :binary) do
+      {:ok, {{_, status, _}, _headers, body}} ->
+        with 200 <- status,
+             {:ok, body} <- Jason.decode(body),
+             %{"application" => "plds"} <- body do
+          :plds_running
+        else
+          _ -> :taken
+        end
 
-  #   case Livebook.Utils.HTTP.request(:get, health_url) do
-  #     {:ok, status, _headers, body} ->
-  #       with 200 <- status,
-  #            {:ok, body} <- Jason.decode(body),
-  #            %{"application" => "plds"} <- body do
-  #         :livebook_running
-  #       else
-  #         _ -> :taken
-  #       end
-
-  #     {:error, _error} ->
-  #       :available
-  #   end
-  # end
+      {:error, _error} ->
+        :available
+    end
+  end
 
   defp start_server() do
     # We configure the endpoint in prod with `server: true`,
@@ -180,13 +180,6 @@ defmodule PLDSCli.Server do
 
     System.cmd(cmd, args)
   end
-
-  # defp append_path(url, path) do
-  #   url
-  #   |> URI.parse()
-  #   |> Map.update!(:path, &((&1 || "/") <> path))
-  #   |> URI.to_string()
-  # end
 
   defp print_error(message) do
     IO.ANSI.format([:red, message]) |> IO.puts()
